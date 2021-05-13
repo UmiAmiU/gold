@@ -3,7 +3,7 @@ const symbolSelect = document.querySelector("#symbol");
 const display = document.querySelector(".display-block");
 
 function start() {
-  fetch(`https://api.ratesapi.io/api/latest​`)
+  fetch(`https://api.ratesapi.io/api/latest`)
     .then((res) => res.json())
     .then((data) => {
       baseSelect.append(new Option("EUR", "EUR"));
@@ -12,12 +12,15 @@ function start() {
         baseSelect.append(new Option(currency, currency));
         symbolSelect.append(new Option(currency, currency));
       }
+    })
+    .catch((error) => {
+      throw new Error(error);
     });
 }
 
 function getCurrency() {
   fetch(
-    `https://api.ratesapi.io/api/latest​?base=${baseSelect.value}&symbols=GBP${symbolSelect.value}`
+    `https://api.ratesapi.io/api/latest?base=${baseSelect.value}&symbols=${symbolSelect.value}`
   )
     .then((res) => res.json())
     .then((data) => {
@@ -34,5 +37,13 @@ function getCurrency() {
         lineDiv.append(currSpan, spotSpan);
         display.append(lineDiv);
       }
+    })
+    .catch((error) => {
+      throw new Error(error);
     });
 }
+
+baseSelect.addEventListener("change", (event) => getCurrency());
+symbolSelect.addEventListener("change", (event) => getCurrency());
+
+start();
